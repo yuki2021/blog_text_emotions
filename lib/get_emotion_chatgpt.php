@@ -2,7 +2,7 @@
 
 include('./conf/api_key.php');
 
-class SentenceSummaryChatGPT {
+class GetEmotionChatGPT {
 
     private $header = array();
     private $send_data = array();
@@ -28,12 +28,17 @@ class SentenceSummaryChatGPT {
         
         $prompt = <<<EOT2
  #命令書:
- 入力文を元に文章を要約してください。目的は300字程度の簡潔な文章にすることです。出力するのは要約文のみ。
- 
- #入力文:
- {$text}
- 
- #出力文:
+以下の入力文のネガティブ度とポジティブ度を0から100の範囲で評価し、以下の形式でJSONで返してください。
+
+{
+    "negative": <ネガティブ度>,
+    "positive": <ポジティブ度>
+}
+
+#入力文:
+{$text}
+
+#出力文:
 EOT2;      
         
         $this->send_data = array(

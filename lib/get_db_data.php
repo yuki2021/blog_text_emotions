@@ -37,19 +37,20 @@ class HandleDBData {
     /// まだhatena_content_abstractに保存されてないデータを一覧取得
     public function getEmptyList() {
         $tempArr = $this->db->query('SELECT a.id, a.blog_id FROM `hatena_blog_data` AS a 
-        LEFT JOIN `hatena_content_abstract` AS b 
+        LEFT JOIN `hatena_blog_emotions` AS b 
         ON a.`id` = b.`hatena_blog_id`
-        where b.`abstract` IS NULL
+        where b.`negative` IS NULL and b.`positive` IS NULL
         order by a.`published` desc')->get();
 
         return $tempArr;
     }
 
-    /// 取得したデータをhatena_content_abstractに保存
-    public function setAbstractData($hatena_blog_id, $abstract) {
-        $this->db->table('hatena_content_abstract')->insert([
+    /// 取得したデータをhatena_blog_emotionsに保存
+    public function setEmotionData($hatena_blog_id, $negate, $positive) {
+        $this->db->table('hatena_blog_emotions')->insert([
             'hatena_blog_id' => $hatena_blog_id,
-            'abstract' => $abstract
+            'negate' => $negate,
+            'positive' => $positive
         ]);
     }
 

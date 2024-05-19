@@ -2,7 +2,7 @@
 
 include('./conf/api_key.php');
 require('./lib/get_db_data.php');
-require('./lib/sentence_summary_chatgpt.php');
+require('./lib/get_emotion_chatgpt.php');
 
 class ExecAbstratContent {
     
@@ -11,12 +11,10 @@ class ExecAbstratContent {
 
     public function __construct() {
         $this->DBObj = new HandleDBData();
-        $this->chatGPTObj = new SentenceSummaryChatGPT();
+        $this->chatGPTObj = new GetEmotionChatGPT();
     }
 
     public function execSend() {
-        $chatGPTObj = new SentenceSummaryChatGPT();
-
         $temp = $this->DBObj->getEmptyList();
         $i = 0;
         foreach($temp as $loop) {
@@ -27,11 +25,15 @@ class ExecAbstratContent {
             $this->chatGPTObj->setSendData($text);
             $this->chatGPTObj->execSendData();
             $formatData = $this->chatGPTObj->formatJSONdata();
-            if($formatData !== false) {
-                $this->DBObj->setAbstractData($loop->id, $formatData);
-            } else {
-                break;
-            }
+            $emotionData = json_decode($formatData, true);
+            print_r($emotionData);
+            print($emotionData['negative']);
+            print($emotionData['positive']);
+            // if($formatData !== false) {
+            //     $this->DBObj->setEmotionData($loop->id, $formatData);
+            // } else {
+            //     break;
+            // }
             sleep(1);
             $i++;
         }
